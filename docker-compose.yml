@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: returns_shield_db
+    restart: always
+    environment:
+      POSTGRES_USER: returns_admin
+      POSTGRES_PASSWORD: returns_pass123
+      POSTGRES_DB: returns_shield
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

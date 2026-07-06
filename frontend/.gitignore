@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+.env
+
+# Conda
+conda-env/
+
+# ML models and data (too large for GitHub)
+backend/ml/fraud_model/data/
+backend/ml/cv_model/data/
+backend/ml/cv_model/data_fast/
+*.pkl
+*.keras
+*.tflite
+*.h5
+*.zip
+
+# Keep these
+!backend/ml/fraud_model/fraud_model.pkl
+!backend/ml/cv_model/damage_model.tflite
+!backend/ml/cv_model/class_names.json
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.env
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Docker volumes (local)
+pgdata/
+
+# Logs
+*.log
