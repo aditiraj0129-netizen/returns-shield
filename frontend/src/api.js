@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://localhost:8000' })
+const api = axios.create({ baseURL: 'https://returns-shield-2.onrender.com' })
 
 export const getStats = () => api.get('/returns/stats')
 export const getAllReturns = () => api.get('/returns/all')
