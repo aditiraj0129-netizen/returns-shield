@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://localhost:8000' })
+const api = axios.create({ baseURL: 'https://returns-shield-2.onrender.com' })
+// Warm up Render backend on load
+fetch('https://returns-shield-2.onrender.com/').catch(()=>{})
 
 // ── API calls ─────────────────────────────────────────────────────────────────
 const getStats        = () => api.get('/returns/stats')
