@@ -278,6 +278,11 @@ function Marketplace({ cartCount, setCartCount, onSell }) {
         </div>
       )}
 
+      <div style={{ background:'linear-gradient(135deg,#ecfdf5,#dcfce7)', border:'1px solid #86efac', borderRadius:12, padding:'12px 14px', marginBottom:18, color:'#166534' }}>
+        <p style={{ fontSize:13, fontWeight:700, marginBottom:2 }}>🌿 Sustainability First</p>
+        <p style={{ fontSize:12, color:'#15803d' }}>Every pre-loved purchase helps reduce waste and gives quality items a second life.</p>
+      </div>
+
       {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
         <div>
@@ -316,11 +321,15 @@ function Marketplace({ cartCount, setCartCount, onSell }) {
               onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'}}
               onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.06)'}}>
               {/* Image placeholder with damage indicator */}
-              <div style={{ height:160, background:`linear-gradient(135deg,#f1f5f9,#e2e8f0)`, display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }} onClick={()=>setSelected(l)}>
-                <div style={{ textAlign:'center' }}>
-                  <div style={{ fontSize:48 }}>{l.category==='electronics'?'📱':l.category==='clothing'?'👕':l.category==='footwear'?'👟':'📦'}</div>
-                  <p style={{ fontSize:11, color:'#94a3b8', marginTop:4 }}>Click to view details</p>
-                </div>
+              <div style={{ height:160, background:`linear-gradient(135deg,#f1f5f9,#e2e8f0)`, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', transition:'transform 0.2s' }} onClick={()=>setSelected(l)} onMouseEnter={e=>e.currentTarget.style.transform='scale(1.03)'} onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+                {l.image_url ? (
+                  <img src={l.image_url} alt={l.title} style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.25s ease' }} />
+                ) : (
+                  <div style={{ textAlign:'center' }}>
+                    <div style={{ fontSize:48 }}>{l.category==='electronics'?'📱':l.category==='clothing'?'👕':l.category==='footwear'?'👟':'📦'}</div>
+                    <p style={{ fontSize:11, color:'#94a3b8', marginTop:4 }}>Click to view details</p>
+                  </div>
+                )}
                 {/* Damage indicator */}
                 <div style={{ position:'absolute', top:8, right:8, background:l.damage_score>0.5?'#fee2e2':l.damage_score>0.3?'#fef9c3':'#dcfce7', border:`1px solid ${l.damage_score>0.5?'#fca5a5':l.damage_score>0.3?'#fde047':'#86efac'}`, borderRadius:20, padding:'3px 8px', fontSize:11, fontWeight:700, color:l.damage_score>0.5?'#b91c1c':l.damage_score>0.3?'#a16207':'#15803d' }}>
                   {Math.round((l.damage_score||0)*100)}% dmg
@@ -364,6 +373,12 @@ function Marketplace({ cartCount, setCartCount, onSell }) {
               <button onClick={()=>{setSelected(null);setBuyForm(null);setBuyResult(null)}} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:'#94a3b8' }}>✕</button>
             </div>
             <div style={{ padding:24 }}>
+              {selected.image_url && (
+                <div style={{ marginBottom:16, borderRadius:12, overflow:'hidden', border:'1px solid #e2e8f0' }}>
+                  <img src={selected.image_url} alt={selected.title} style={{ width:'100%', maxHeight:240, objectFit:'cover', display:'block' }} />
+                </div>
+              )}
+
               {/* AI verification section */}
               <div style={{ background:'#f8fafc', borderRadius:12, padding:'16px', marginBottom:20 }}>
                 <p style={{ fontSize:12, fontWeight:700, color:'#94a3b8', textTransform:'uppercase', marginBottom:10 }}>🤖 AI Verification Report</p>
@@ -466,13 +481,23 @@ function Marketplace({ cartCount, setCartCount, onSell }) {
                   <div style={{ fontSize:40, marginBottom:10 }}>🎉</div>
                   <h3 style={{ fontWeight:800, color:'#15803d', marginBottom:6 }}>Order Placed Successfully!</h3>
                   <p style={{ fontSize:13, color:'#374151', marginBottom:12 }}>Payment confirmed · Our team will verify the item before shipping</p>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:12 }}>
                     {[['Tracking ID', buyResult.tracking_id],['Estimated Delivery', buyResult.estimated_delivery],['Status', 'Processing'],['Amount Paid', `₹${buyResult.amount}`]].map(([k,v])=>(
                       <div key={k} style={{ background:'#fff', borderRadius:8, padding:'10px' }}>
                         <p style={{ fontSize:11, color:'#94a3b8' }}>{k}</p>
                         <p style={{ fontSize:13, fontWeight:700, color:'#1e293b' }}>{v}</p>
                       </div>
                     ))}
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                    <div style={{ background:'#fff', borderRadius:8, padding:'10px', textAlign:'left' }}>
+                      <p style={{ fontSize:11, color:'#94a3b8' }}>Delivery Promise</p>
+                      <p style={{ fontSize:13, fontWeight:700, color:'#1e293b' }}>{buyResult.delivery_promise || (selected.category==='electronics' ? 'Verified doorstep delivery with live tracking' : ['clothing','footwear'].includes(selected.category) ? 'Fast dispatch with protective packaging' : 'Secure doorstep delivery')}</p>
+                    </div>
+                    <div style={{ background:'#fff', borderRadius:8, padding:'10px', textAlign:'left' }}>
+                      <p style={{ fontSize:11, color:'#94a3b8' }}>Return Policy</p>
+                      <p style={{ fontSize:13, fontWeight:700, color:'#1e293b' }}>{selected.category==='electronics' ? '7-day return' : ['clothing','footwear'].includes(selected.category) ? '3-day return' : 'Standard return window'}</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -683,6 +708,15 @@ function SellItem({ onSuccess }) {
                 </div>
               )}
 
+              <div style={{ background:'#ecfdf5', border:'1px solid #86efac', borderRadius:8, padding:'10px 14px', marginBottom:12 }}>
+                <p style={{ fontSize:12, color:'#15803d', fontWeight:700, marginBottom:3 }}>🌿 Sustainability</p>
+                <p style={{ fontSize:12, color:'#166534' }}>“Every pre-loved item keeps waste out of landfills and gives it a second life.”</p>
+              </div>
+              <div style={{ background:'#f0fdf4', border:'1px solid #86efac', borderRadius:8, padding:'10px 14px', marginBottom:16 }}>
+                <p style={{ fontSize:12, color:'#15803d', fontWeight:600 }}>🚚 Delivery Promise</p>
+                <p style={{ fontSize:12, color:'#166534' }}>{result.delivery_promise || 'Eco-friendly doorstep delivery with secure handling.'}</p>
+              </div>
+
               <button onClick={()=>{ if(onSuccess) onSuccess() }} style={{ width:'100%', padding:'13px', background:'linear-gradient(135deg,#4f46e5,#7c3aed)', border:'none', borderRadius:10, fontWeight:700, fontSize:14, cursor:'pointer', color:'#fff' }}>
                 Go to Marketplace →
               </button>
@@ -727,11 +761,16 @@ function Cart({ onClose }) {
           <>
             <div style={{ padding:16 }}>
               {items.map(item=>(
-                <div key={item.cart_item_id} style={{ background:'#f8fafc', borderRadius:12, padding:14, marginBottom:10, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <div>
-                    <p style={{ fontSize:13, fontWeight:700, color:'#1e293b', marginBottom:2 }}>{item.title}</p>
-                    <p style={{ fontSize:12, color:'#64748b' }}>📍 {item.seller_city} · {item.condition}</p>
-                    <p style={{ fontSize:16, fontWeight:800, color:'#4f46e5', marginTop:4 }}>₹{item.selling_price?.toLocaleString('en-IN')}</p>
+                <div key={item.cart_item_id} style={{ background:'#f8fafc', borderRadius:12, padding:14, marginBottom:10, display:'flex', justifyContent:'space-between', alignItems:'center', gap:12 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:10, flex:1 }}>
+                    <div style={{ width:56, height:56, borderRadius:12, overflow:'hidden', background:'#e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                      {item.image_url ? <img src={item.image_url} alt={item.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <span style={{ fontSize:24 }}>{item.category==='electronics'?'📱':item.category==='clothing'?'👕':item.category==='footwear'?'👟':'📦'}</span>}
+                    </div>
+                    <div style={{ flex:1 }}>
+                      <p style={{ fontSize:13, fontWeight:700, color:'#1e293b', marginBottom:2 }}>{item.title}</p>
+                      <p style={{ fontSize:12, color:'#64748b' }}>📍 {item.seller_city} · {item.condition}</p>
+                      <p style={{ fontSize:16, fontWeight:800, color:'#4f46e5', marginTop:4 }}>₹{item.selling_price?.toLocaleString('en-IN')}</p>
+                    </div>
                   </div>
                   <button onClick={()=>remove(item.listing_id)} style={{ background:'#fee2e2', border:'none', color:'#ef4444', width:32, height:32, borderRadius:8, cursor:'pointer', fontSize:14, fontWeight:700 }}>✕</button>
                 </div>
@@ -1078,7 +1117,7 @@ export default function App() {
     </main>
 
     <footer style={{ borderTop:'1px solid #e2e8f0', background:'#fff', marginTop:48, padding:'24px', textAlign:'center' }}>
-      <p style={{ fontSize:13, color:'#94a3b8' }}>🛡️ <span style={{ fontWeight:700, color:'#4f46e5' }}>ShieldMart</span> · Built with ❤️ by <span style={{ fontWeight:800, color:'#7c3aed' }}>Aditi Raj and Tanmay</span> · </p>
+      <p style={{ fontSize:13, color:'#94a3b8' }}>🛡️ <span style={{ fontWeight:700, color:'#4f46e5' }}>ShieldMart</span> · Built with ❤️ by <span style={{ fontWeight:800, color:'#7c3aed' }}>Aditi Raj </span> · </p>
       <p style={{ fontSize:11, color:'#cbd5e1', marginTop:6 }}>XGBoost · FastAPI · React · PostgreSQL · Razorpay · Computer Vision · Docker</p>
     </footer>
 
